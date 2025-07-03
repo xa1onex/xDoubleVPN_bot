@@ -7,8 +7,11 @@ import paramiko
 import qrcode
 import secrets
 import random
+from telebot.types import Message
+from urllib.parse import quote
 from cryptography.hazmat.primitives.asymmetric import x25519
 from cryptography.hazmat.primitives import serialization
+
 from loader import app_logger
 from database.models import VPNKey, Server
 import copy
@@ -343,7 +346,7 @@ def setup_server(server_obj: Server) -> bool:
         return False
 
 
-def generate_key(server_obj: Server) -> VPNKey | None:
+def generate_key(server_obj: Server, message: Message) -> VPNKey | None:
     """
     Генерирует новый VPN ключ для сервера.
 
@@ -413,6 +416,9 @@ def generate_key(server_obj: Server) -> VPNKey | None:
             app_logger.error(f"Ошибка при парсинге конфигурационного файла: {e}")
             return None
 
+        full_name = message.from_user.full_name
+        full_name_encoded = quote(full_name)
+
         vless_link = (
             f"vless://{client_uuid}@{server_obj.ip_address}:443?"
             f"security=reality&"
@@ -422,7 +428,7 @@ def generate_key(server_obj: Server) -> VPNKey | None:
             f"fp={XRAY_REALITY_FINGERPRINT}&"
             f"sni={server_name}&"
             f"pbk={public_key}&"
-            f"sid={short_id}#GuardVPN"
+            f"sid={short_id}#{full_name}"
         )
         app_logger.info(f"Сформирована VLESS ссылка: {vless_link}")
 
