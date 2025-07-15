@@ -52,9 +52,9 @@ def bot_start(message: Message):
             user_keys_count = cur_user.vpn_keys.count()
             keys_info = f"{user_keys_count} / {MAX_KEYS} (максимум)" if user_keys_count >= MAX_KEYS else f"{user_keys_count} / {MAX_KEYS}"
             if user_keys_count >= 1:
-                keys_title = "🔑 Ваши VPN ключи 👇"
+                keys_title = "🔑 Ваши VPN ключи👇"
             else:
-                keys_title = "🔑 Создай первый ключ 👇"
+                keys_title = "🔑 Создай первый ключ👇"
             if cur_user.is_subscribed:
                 app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
                 bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"

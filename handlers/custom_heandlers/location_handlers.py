@@ -18,11 +18,11 @@ def inline_location_callback(call: CallbackQuery):
 
     if is_subscribed(CHANNEL_ID, call.from_user.id):
         cur_user.is_subscribed = True
-        bot.send_message(call.message.chat.id, _("🌍 Пожалуйста, выберите сервер для подключения:"),
+        bot.edit_message_text(call.message.chat.id, _("🌍 Пожалуйста, выберите сервер для подключения:"),
                          reply_markup=get_locations_markup())
         bot.set_state(call.from_user.id, GetVPNKey.get_server)
     else:
-        bot.send_message(call.message.chat.id, _("🚫 Вы не подписаны на [наш канал](https://t.me/{channel_id})!\n"
+        bot.edit_message_text(call.message.chat.id, _("🚫 Вы не подписаны на [наш канал](https://t.me/{channel_id})!\n"
                                                  "Подпишитесь, чтобы получить доступ ко всему функционалу.").format(
             channel_id=CHANNEL_ID[1:]
         ),
