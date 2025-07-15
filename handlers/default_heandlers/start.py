@@ -51,6 +51,10 @@ def bot_start(message: Message):
             MAX_KEYS = 3
             user_keys_count = cur_user.vpn_keys.count()
             keys_info = f"{user_keys_count} / {MAX_KEYS} (максимум)" if user_keys_count >= MAX_KEYS else f"{user_keys_count} / {MAX_KEYS}"
+            if user_keys_count >= 1:
+                keys_title = "🔑 Ваши VPN ключи 👇"
+            else:
+                keys_title = "🔑 Создай первый ключ 👇"
             if cur_user.is_subscribed:
                 app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
                 bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
@@ -62,11 +66,12 @@ def bot_start(message: Message):
                                                          "/instruction - Инструкция для подключения\n\n"
                                                          "Кстати, у нас есть свой <b>ChatGPT</b> прямо в <b>Telegram</b>, быстрее пробуй "
                                                          "<a href='https://t.me/xChatGPT4o_bot?start=ref_6f244876'>здесь</a> полностью <b>бесплатно</b>!\n\n"
-                                                         "🔑 Ваши VPN ключи 👇").format(
+                                                         "{keys_title}").format(
                     full_name=cur_user.full_name,
                     username=cur_user.username,
                     is_subscribed=cur_user.is_subscribed,
-                    keys_info=keys_info
+                    keys_info=keys_info,
+                    keys_title=keys_title
 
                 ),
                                  reply_markup=user_panel_markup(cur_user),
