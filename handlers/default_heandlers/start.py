@@ -13,7 +13,7 @@ from i18n_middleware import _
 
 start_text = ("*Вы не подписались на канал!*\n"
 "\n"
-"☺️ Для доступа к полному функционалу бота вам необходимо подписаться на наш новостной канал [Guard Tunnel VPN](https://t.me/{channel_id})\n"
+"☺️ Для доступа к полному функционалу бота вам необходимо подписаться на наш новостной канал (https://t.me/{channel_id})\n"
 "\n"
 "🎁 В подарок вы получите *бесплатный доступ* на использование нашего сервиса\n"
 "\n"
@@ -35,14 +35,32 @@ def bot_start(message: Message):
                         is_subscribed=is_sub)
         commands = [f"/{command} - {_(description)}" for command, description in DEFAULT_COMMANDS]
         if message.from_user.id in ALLOWED_USERS:
-
-            commands.extend([f"/{command} - {_(description)}" for command, description in ADMIN_COMMANDS])
-            bot.send_message(
-                message.from_user.id,
-                _("Здравствуйте, {full_name}! 👋\n"
-                "Вы вошли как администратор. Доступны следующие команды:\n{commands}").format(
-                    full_name=message.from_user.full_name,
-                    commands='\n'.join(commands)
+            cur_user = User.get(User.user_id == message.from_user.id)
+            MAX_KEYS = 3
+            user_keys_count = cur_user.vpn_keys.count()
+            keys_info = f"{user_keys_count} / {MAX_KEYS} (максимум)" if user_keys_count >= MAX_KEYS else f"{user_keys_count} / {MAX_KEYS}"
+            if user_keys_count >= 1:
+                keys_title = "🔑 Ваши VPN ключи👇"
+            else:
+                keys_title = "🔑 Создай первый ключ👇"
+            if cur_user.is_subscribed:
+                app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
+                bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b> (админ)!\n\n"
+                                                         "Кол-во ключей: <i>{keys_info}</i>\n"
+                                                         "Подписан на канал: <i>{is_subscribed}</i>\n\n"
+                                                         "📌 Команды:\n"
+                                                         "/instruction - Мануал для подключения\n"
+                                                         "/admin_panel - Админка\n"
+                                                         "/message_sending - Рассылка сообщений\n"
+                                                         "/add_vpn_key - Вручную добавить ключ\n\n"
+                                                         "Кстати, у нас есть свой <b>ChatGPT</b> прямо в <b>Telegram</b>, быстрее пробуй "
+                                                         "<a href='https://t.me/xChatGPT4o_bot?start=ref_6f244876'>здесь</a> полностью <b>бесплатно</b>!\n\n"
+                                                         "{keys_title}").format(
+                    full_name=cur_user.full_name,
+                    username=cur_user.username,
+                    is_subscribed=cur_user.is_subscribed,
+                    keys_info=keys_info,
+                    keys_title=keys_title
                 ),
                 reply_markup=handlers_reply()
             )
@@ -72,7 +90,6 @@ def bot_start(message: Message):
                     is_subscribed=cur_user.is_subscribed,
                     keys_info=keys_info,
                     keys_title=keys_title
-
                 ),
                                  reply_markup=user_panel_markup(cur_user),
                                  disable_web_page_preview=True,
