@@ -35,6 +35,7 @@ def bot_start(message: Message):
                         is_subscribed=is_sub)
         commands = [f"/{command} - {_(description)}" for command, description in DEFAULT_COMMANDS]
         if message.from_user.id in ALLOWED_USERS:
+
             commands.extend([f"/{command} - {_(description)}" for command, description in ADMIN_COMMANDS])
             bot.send_message(
                 message.from_user.id,
@@ -48,11 +49,11 @@ def bot_start(message: Message):
         else:
             cur_user = User.get(User.user_id == message.from_user.id)
             user_keys = list(cur_user.vpn_keys)
-            active_keys_count = len([key for key in cur_user.vpn_keys if key.vpn_key.is_valid])
             if cur_user.is_subscribed:
+                active_keys_count = len([key for key in cur_user.vpn_keys if key.vpn_key.is_valid])
                 app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
                 bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
-                                                         "Кол-во ключей: <i>{active_keys_count}</i>\n"
+                                                         f"Кол-во ключей: <i>{active_keys_count}</i>\n"
                                                          "Подписан на канал: <i>{is_subscribed}</i>\n\n"
                                                          "📌 Команды:\n"
                                                          "/start - Перезагрузить бота\n"
