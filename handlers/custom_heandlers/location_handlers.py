@@ -1,4 +1,4 @@
-from telebot.types import Message
+from telebot.types import Message, CallbackQuery
 
 from config_data.config import CHANNEL_ID
 from database.models import User, Server, VPNKey, UserVPNKey
@@ -10,6 +10,25 @@ from utils.generate_vpn_keys import generate_key
 from utils.tasks import cancel_key_revocation_for_user
 from utils.work_vpn_keys import revoke_key
 from i18n_middleware import _
+
+@bot.callback_query_handler(func=lambda call: call.data == "select_location")
+def inline_location_callback(call: CallbackQuery):
+    app_logger.info(f"Пользователь {call.from_user.full_name} вызвал inline-кнопку выбора сервера")
+    cur_user = User.get(User.user_id == call.from_user.id)
+
+    if is_subscribed(CHANNEL_ID, call.from_user.id):
+        cur_user.is_subscribed = True
+        bot.send_message(call.message.chat.id, _("🌍 Пожалуйста, выберите сервер для подключения:"),
+                         reply_markup=get_locations_markup())
+        bot.set_state(call.from_user.id, GetVPNKey.get_server)
+    else:
+        bot.send_message(call.message.chat.id, _("🚫 Вы не подписаны на [наш канал](https://t.me/{channel_id})!\n"
+                                                 "Подпишитесь, чтобы получить доступ ко всему функционалу.").format(
+            channel_id=CHANNEL_ID[1:]
+        ),
+                         parse_mode="Markdown")
+        cur_user.is_subscribed = False
+    cur_user.save()
 
 
 @bot.message_handler(commands=["location"])

@@ -11,7 +11,7 @@ def user_panel_markup(user_obj: User):
     for uv_obj in user_obj.vpn_keys:
         actions.add(InlineKeyboardButton(text=f"🔑 {uv_obj.vpn_key.name}",
                                          callback_data=f"VPN - {str(uv_obj.vpn_key.id)}"))
-    actions.add(InlineKeyboardButton(text=_("🚪 Выйти"), callback_data="Cancel"))
+    actions.add(InlineKeyboardButton(text=_("🌍 Выбрать сервер"), callback_data="select_location"))
     return actions
 
 
