@@ -48,11 +48,11 @@ def bot_start(message: Message):
             )
         else:
             cur_user = User.get(User.user_id == message.from_user.id)
-            user_keys = list(cur_user.vpn_keys)
+            user_keys_count = cur_user.vpn_keys.count()
             if cur_user.is_subscribed:
                 app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
                 bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
-                                                         f"Кол-во ключей: <i>{list(cur_user.vpn_keys)}</i>\n"
+                                                         "Кол-во ключей: <i>{user_keys_count}</i>\n"
                                                          "Подписан на канал: <i>{is_subscribed}</i>\n\n"
                                                          "📌 Команды:\n"
                                                          "/start - Перезагрузить бота\n"
@@ -63,7 +63,9 @@ def bot_start(message: Message):
                                                          "🔑 Ваши VPN ключи 👇").format(
                     full_name=cur_user.full_name,
                     username=cur_user.username,
-                    is_subscribed=cur_user.is_subscribed
+                    is_subscribed=cur_user.is_subscribed,
+                    user_keys_count = user_keys_count
+
                 ),
                                  reply_markup=user_panel_markup(cur_user),
                                  disable_web_page_preview=True,
