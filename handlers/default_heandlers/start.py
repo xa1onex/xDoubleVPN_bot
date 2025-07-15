@@ -51,7 +51,7 @@ def bot_start(message: Message):
                                                          "📌 Команды:\n"
                                                          "/instruction - Мануал для подключения\n"
                                                          "/admin_panel - Админка\n"
-                                                         "/message_sending - Рассылка сообщений\n"
+                                                         "/message_sending - Рассылка\n"
                                                          "/add_vpn_key - Вручную добавить ключ\n\n"
                                                          "Кстати, у нас есть свой <b>ChatGPT</b> прямо в <b>Telegram</b>, быстрее пробуй "
                                                          "<a href='https://t.me/xChatGPT4o_bot?start=ref_6f244876'>здесь</a> полностью <b>бесплатно</b>!\n\n"
@@ -66,6 +66,7 @@ def bot_start(message: Message):
                 disable_web_page_preview=True,
                 parse_mode="HTML"
             )
+                bot.set_state(message.from_user.id, UserPanel.get_keys)
         else:
             cur_user = User.get(User.user_id == message.from_user.id)
             MAX_KEYS = 3
