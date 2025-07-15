@@ -62,10 +62,9 @@ def bot_start(message: Message):
                     keys_info=keys_info,
                     keys_title=keys_title
                 ),
-                reply_markup=handlers_reply(),
+                reply_markup=user_panel_markup(cur_user),
                 disable_web_page_preview=True,
-                parse_mode="HTML"
-            )
+                parse_mode="HTML")
                 bot.set_state(message.from_user.id, UserPanel.get_keys)
         else:
             cur_user = User.get(User.user_id == message.from_user.id)
