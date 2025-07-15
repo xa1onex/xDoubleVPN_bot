@@ -57,7 +57,7 @@ def bot_start(message: Message):
                 keys_title = "🔑 Создай первый ключ👇"
             if cur_user.is_subscribed:
                 app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
-                bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
+                bot.edit_message_text(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
                                                          "Кол-во ключей: <i>{keys_info}</i>\n"
                                                          "Подписан на канал: <i>{is_subscribed}</i>\n\n"
                                                          "📌 Команды:\n"

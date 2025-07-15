@@ -22,7 +22,7 @@ def inline_location_callback(call: CallbackQuery):
                          reply_markup=get_locations_markup())
         bot.set_state(call.from_user.id, GetVPNKey.get_server)
     else:
-        bot.edit_message_text(call.message.chat.id, _("🚫 Вы не подписаны на [наш канал](https://t.me/{channel_id})!\n"
+        bot.send_message(call.message.chat.id, _("🚫 Вы не подписаны на [наш канал](https://t.me/{channel_id})!\n"
                                                  "Подпишитесь, чтобы получить доступ ко всему функционалу.").format(
             channel_id=CHANNEL_ID[1:]
         ),
