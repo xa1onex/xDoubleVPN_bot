@@ -3,6 +3,8 @@ from loader import bot, app_logger
 from config_data.config import DEFAULT_COMMANDS, ADMIN_COMMANDS, ALLOWED_USERS, CHANNEL_ID
 from database.models import User, Group
 from utils.functions import is_subscribed
+from keyboards.inline.users import user_panel_markup
+from states.states import UserPanel
 from keyboards.inline.subscribed import is_subscribed_markup
 from keyboards.reply.handlers_reply import handlers_reply
 from states.states import SubscribedState
@@ -44,20 +46,27 @@ def bot_start(message: Message):
                 reply_markup=handlers_reply()
             )
         else:
-            if is_subscribed(CHANNEL_ID, message.from_user.id):
-                # Если пользователь подписан на канал, тогда ему можно пользоваться ботом.
-                bot.send_message(message.from_user.id, _("Приветствуем, {full_name}.\n"
-                                                       "Рады приветствовать вас на нашем сервисе!\n"
-                                                       "Что бы использовать наш VPN сервис, "
-                                                       "следуйте инструкциям ниже 👇\n"
-                                                       "{commands}").format(
-                    full_name=message.from_user.full_name,
-                    commands='\n'.join(commands)
+            cur_user = User.get(User.user_id == message.from_user.id)
+            if cur_user.is_subscribed:
+                app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
+                bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
+                                                         "Premium: <i>неактивен</i>\n"
+                                                         "Подписан на канал: <i>{is_subscribed}</i>\n\n"
+                                                         "📌 Команды:\n"
+                                                         "/start - Перезагрузить бота\n"
+                                                         "/location - Cервер для подключения\n"
+                                                         "/instruction - Инструкция для подключения\n\n"
+                                                         "Кстати, у нас есть свой <b>ChatGPT</b> прямо в <b>Telegram</b>, быстрее пробуй "
+                                                         "<a href='https://t.me/xChatGPT4o_bot?start=ref_6f244876'>здесь</a> полностью <b>бесплатно</b>!\n\n"
+                                                         "🔑 Ваши VPN ключи 👇").format(
+                    full_name=cur_user.full_name,
+                    username=cur_user.username,
+                    is_subscribed=cur_user.is_subscribed
                 ),
-                                 reply_markup=handlers_reply())
-                cur_user = User.get(User.user_id == message.from_user.id)
-                cur_user.is_subscribed = True
-                cur_user.save()
+                                 reply_markup=user_panel_markup(cur_user),
+                                 disable_web_page_preview=True,
+                                 parse_mode="HTML")
+                bot.set_state(message.from_user.id, UserPanel.get_keys)
             else:
                 bot.send_message(message.from_user.id, _(start_text).format(channel_id=CHANNEL_ID[1:]),
                                  reply_markup=is_subscribed_markup(), parse_mode='Markdown',

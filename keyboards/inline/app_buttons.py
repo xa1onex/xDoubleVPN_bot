@@ -8,8 +8,7 @@ def get_apps_murkup():
 
     actions.add(InlineKeyboardButton(text="💻 Windows", url="https://github.com/hiddify/hiddify-next/releases/"
                                                          "download/v2.0.5/Hiddify-Windows-Setup-x64.exe"),
-                InlineKeyboardButton(text="🍏 MacOS", url="https://apps.apple.com/ru/app/"
-                                                       "hiddify-proxy-vpn/id6596777532"),
+                InlineKeyboardButton(text="🍏 MacOS", url="https://apps.apple.com/ru/app/streisand/id6450534064"),
                 InlineKeyboardButton(text="🐧 Linux", url="https://github.com/hiddify/hiddify-next/releases/"
                                                        "download/v2.0.5/Hiddify-Debian-x64.deb")
                 )

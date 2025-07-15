@@ -414,8 +414,8 @@ def generate_key(server_obj: Server) -> VPNKey | None:
             app_logger.error(f"Ошибка при парсинге конфигурационного файла: {e}")
             return None
 
-        random_number = random.randint(1, 999)
-        key_number = f"{random_number:03}"
+        last_key = VPNKey.select().order_by(VPNKey.id.desc()).first()
+        key_number = last_key.id + 1 if last_key else 1
         name = f"{server_obj.location} #{key_number}"
         vless_link = (
             f"vless://{client_uuid}@{server_obj.ip_address}:443?"
@@ -432,7 +432,8 @@ def generate_key(server_obj: Server) -> VPNKey | None:
 
 
         # Шаг 5. Генерация QR-кода
-        key_number = len(server_obj.keys) + 1 if hasattr(server_obj, "keys") else 1
+        last_key = VPNKey.select().order_by(VPNKey.id.desc()).first()
+        key_number = last_key.id + 1 if last_key else 1
         qr_code_filename = f"vpn_key_{server_obj.id}_{key_number}.png"
         qr_code_path = os.path.join(QR_CODE_DIR, qr_code_filename)
         qr = qrcode.QRCode(

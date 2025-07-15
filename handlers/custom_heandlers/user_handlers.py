@@ -12,7 +12,7 @@ from utils.work_vpn_keys import revoke_key
 from i18n_middleware import _
 
 
-@bot.message_handler(commands=["panel"])
+@bot.message_handler(commands=["top_secret"])
 def user_panel(message: Message):
     """ Хендлер для юзер панели """
     cur_user = User.get(User.user_id == message.from_user.id)
