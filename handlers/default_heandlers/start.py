@@ -66,7 +66,7 @@ def bot_start(message: Message):
                     full_name=cur_user.full_name,
                     username=cur_user.username,
                     is_subscribed=cur_user.is_subscribed,
-                    user_keys_count = user_keys_count
+                    keys_info = keys_info
 
                 ),
                                  reply_markup=user_panel_markup(cur_user),
