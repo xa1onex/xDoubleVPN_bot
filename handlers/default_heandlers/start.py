@@ -23,7 +23,7 @@ start_text = ("*Вы не подписались на канал!*\n"
 
 
 @bot.message_handler(commands=['start'])
-def bot_start(message: Message):
+def bot_start(message: Message, call):
     if message.chat.type == "private":
         is_sub = True if message.from_user.id in ALLOWED_USERS else False
         if User.get_or_none(user_id=message.from_user.id) is None:
@@ -47,7 +47,8 @@ def bot_start(message: Message):
             )
         else:
             cur_user = User.get(User.user_id == message.from_user.id)
-            user_keys = list(cur_user.vpn_keys)
+            cur_userr: User = User.get(User.user_id == call.from_user.id)
+            user_keys = list(cur_userr.vpn_keys)
             if cur_user.is_subscribed:
                 app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
                 bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
