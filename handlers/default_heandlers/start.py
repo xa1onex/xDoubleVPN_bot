@@ -48,11 +48,13 @@ def bot_start(message: Message):
             )
         else:
             cur_user = User.get(User.user_id == message.from_user.id)
+            MAX_KEYS = 3
             user_keys_count = cur_user.vpn_keys.count()
+            keys_info = f"{user_keys_count} / {MAX_KEYS} (максимум)" if user_keys_count >= MAX_KEYS else f"{user_keys_count} / {MAX_KEYS}"
             if cur_user.is_subscribed:
                 app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
                 bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
-                                                         "Кол-во ключей: <i>{user_keys_count}</i>\n"
+                                                         "Кол-во ключей: <i>{keys_info}</i>\n"
                                                          "Подписан на канал: <i>{is_subscribed}</i>\n\n"
                                                          "📌 Команды:\n"
                                                          "/start - Перезагрузить бота\n"
