@@ -18,7 +18,7 @@ def inline_location_callback(call: CallbackQuery):
 
     if is_subscribed(CHANNEL_ID, call.from_user.id):
         cur_user.is_subscribed = True
-        bot.edit_message_text(call.message.chat.id, _("🌍 Пожалуйста, выберите сервер для подключения:"),
+        bot.send_message(call.message.chat.id, _("🌍 Пожалуйста, выберите сервер для подключения:"),
                          reply_markup=get_locations_markup())
         bot.set_state(call.from_user.id, GetVPNKey.get_server)
     else:
