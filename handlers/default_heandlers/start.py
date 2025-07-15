@@ -48,7 +48,7 @@ def bot_start(message: Message):
         else:
             cur_user = User.get(User.user_id == message.from_user.id)
             user_keys = list(cur_user.vpn_keys)
-            active_keys_count = len([key for key in cur_user.vpn_keys if key.is_valid])
+            active_keys_count = len([key for key in cur_user.vpn_keys if key.vpn_key.is_valid])
             if cur_user.is_subscribed:
                 app_logger.info(f"Пользователь {message.from_user.full_name} зашел в юзер панель.")
                 bot.send_message(message.from_user.id, _("👋 Рады видеть тебя снова, <b>{full_name}</b>!\n\n"
