@@ -229,11 +229,11 @@ def vpn_panel_handler(call):
 
         user_names = [uv.user.full_name for uv in vpn_obj.users]
         users_str = ", ".join(user_names) if user_names else _("Нет пользователей")
-        text = _("🔑 Ключ: {name}\n"
-            "📍 Сервер: {location}\n"
-            "📡 Статус: {status}\n"
-            "👤 Пользователи: {users}\n"
-            "🕒 Создан: {date}").format(
+        text = _("Ключ: {name}\n"
+            "Сервер: {location}\n"
+            "Статус: {status}\n"
+            "Пользователи: {users}\n"
+            "Создан: {date}").format(
                 name=vpn_obj.name,
                 location=vpn_obj.server.location,
                 status=status,
